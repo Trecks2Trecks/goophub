@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GooPHub — Where code goes to get carbonized</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1b140d;
+    --bg-deep: #120d08;
+    --surface: #2a1f15;
+    --surface-2: #33271a;
+    --border: #463526;
+    --text: #f4e6d4;
+    --text-muted: #b8a690;
+    --text-faint: #80705e;
+    --ember: #ff7a3d;
+    --ember-deep: #d4561a;
+    --ember-glow: #ffb366;
+    --tan: #d6b88a;
+    --gold: #e8b54a;
+
+    --lang-python: #ffd166;
+    --lang-shell: #c9a876;
+    --lang-js: #f4d35e;
+    --lang-ts: #6cb4ee;
+    --lang-md: #9c8b78;
+
+    --radius: 10px;
+    --font-display: "Space Grotesk", sans-serif;
+    --font-body: "Inter", sans-serif;
+    --font-mono: "IBM Plex Mono", monospace;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.55;
+    background-image:
+      radial-gradient(ellipse 800px 500px at 15% -10%, rgba(255,122,61,0.10), transparent 60%),
+      radial-gradient(ellipse 600px 400px at 90% 10%, rgba(232,181,74,0.06), transparent 60%);
+  }
+
+  a{ color: var(--ember-glow); text-decoration: none; }
+  a:hover{ text-decoration: underline; }
+
+  :focus-visible{
+    outline: 2px solid var(--ember);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* ---------- NAV ---------- */
+  header.site-nav{
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(27,20,13,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner{
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; gap: 24px;
+    padding: 14px 24px;
+  }
+  .logo{
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 700; font-size: 1.25rem;
+    color: var(--text);
+    flex-shrink: 0;
+  }
+  .logo:hover{ text-decoration: none; }
+  .logo-mark{ width: 30px; height: 30px; display:block; }
+
+  .nav-links{
+    display: flex; gap: 18px; align-items: center;
+    font-size: 0.92rem; color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .nav-links a{ color: var(--text-muted); }
+  .nav-links a:hover{ color: var(--text); text-decoration: none; }
+
+  .nav-search{
+    flex: 1; max-width: 380px;
+    position: relative;
+  }
+  .nav-search input{
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px 7px 32px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+  }
+  .nav-search input::placeholder{ color: var(--text-faint); }
+  .nav-search input:focus{ outline: none; border-color: var(--ember-deep); }
+  .nav-search .icon{
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--text-faint); font-size: 0.85rem; pointer-events: none;
+  }
+
+  .nav-actions{ display: flex; gap: 10px; align-items: center; margin-left: auto; flex-shrink: 0; }
+
+  .btn{
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.86rem;
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+  }
+  .btn:hover{ border-color: var(--ember); text-decoration: none; }
+  .btn:active{ transform: translateY(1px); }
+  .btn-primary{
+    background: linear-gradient(180deg, var(--ember) 0%, var(--ember-deep) 100%);
+    border-color: var(--ember-deep);
+    color: #1b1108;
+  }
+  .btn-primary:hover{ filter: brightness(1.08); border-color: var(--ember); }
+  .btn-ghost{ border-color: transparent; color: var(--text-muted); }
+  .btn-ghost:hover{ color: var(--text); }
+
+  @media (max-width: 880px){
+    .nav-links, .nav-search{ display: none; }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    max-width: 1200px; margin: 0 auto;
+    padding: 72px 24px 56px;
+    display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px;
+    align-items: center;
+  }
+  .hero-eyebrow{
+    font-family: var(--font-mono);
+    font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ember-glow);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 18px;
+  }
+  .hero-eyebrow::before{
+    content: ""; display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--ember);
+    box-shadow: 0 0 10px var(--ember);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{ opacity: 1; } 50%{ opacity: 0.35; } }
+
+  .hero h1{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+  .hero h1 .accent{
+    background: linear-gradient(100deg, var(--ember-glow), var(--ember-deep));
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+  }
+  .hero p.lead{
+    font-size: 1.08rem; color: var(--text-muted);
+    max-width: 46ch; margin-bottom: 30px;
+  }
+  .hero-ctas{ display: flex; gap: 12px; margin-bottom: 38px; flex-wrap: wrap; }
+  .hero-ctas .btn{ padding: 11px 22px; font-size: 0.95rem; }
+
+  .stat-strip{
+    display: grid; grid-template-columns: repeat(3, auto); gap: 28px;
+    font-family: var(--font-mono);
+  }
+  .stat-strip .stat-num{
+    font-size: 1.5rem; font-weight: 600; color: var(--text);
+  }
+  .stat-strip .stat-label{
+    font-size: 0.74rem; color: var(--text-faint);
+    text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px;
+  }
+
+  /* ---------- HERO PEANUT VISUAL ---------- */
+  .hero-visual{
+    display: flex; justify-content: center; align-items: center;
+    position: relative;
+  }
+  .peanut-stage{
+    position: relative; width: 100%; max-width: 360px;
+  }
+  .smoke-wisp{
+    position: absolute;
+    width: 60px; height: 120px;
+    opacity: 0.5;
+    filter: blur(2px);
+    animation: rise 6s ease-in infinite;
+  }
+  .smoke-wisp.s1{ left: 30%; top: -40px; animation-delay: 0s; }
+  .smoke-wisp.s2{ left: 55%; top: -20px; animation-delay: 2s; width: 40px; }
+  .smoke-wisp.s3{ left: 42%; top: -60px; animation-delay: 4s; width: 50px; opacity: 0.35; }
+  @keyframes rise{
+    0%{ transform: translateY(20px) scale(0.8); opacity: 0; }
+    20%{ opacity: 0.45; }
+    100%{ transform: translateY(-140px) scale(1.3); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .smoke-wisp, .hero-eyebrow::before, .flame-flicker{ animation: none !important; }
+  }
+
+  /* ---------- SECTION HEADERS ---------- */
+  .section{ max-width: 1200px; margin: 0 auto; padding: 48px 24px; }
+  .section-head{
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 22px; gap: 16px; flex-wrap: wrap;
+  }
+  .section-head h2{
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 1.5rem; display: flex; align-items: center; gap: 10px;
+  }
+  .section-head p{ color: var(--text-faint); font-size: 0.9rem; }
+
+  /* ---------- REPO GRID ---------- */
+  .repo-grid{
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 16px;
+  }
+  .repo-card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .repo-card:hover{ border-color: var(--ember-deep); transform: translateY(-2px); }
+  .repo-card.hidden{ display: none; }
+
+  .repo-card .repo-title{
+    font-family: var(--font-mono); font-weight: 600; font-size: 0.95rem;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .repo-card .repo-title a{ color: var(--ember-glow); }
+  .repo-card .repo-title .owner{ color: var(--text-faint); }
+  .badge{
+    font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+    border: 1px solid var(--border);
+    border-radius: 100px; padding: 2px 9px;
+    color: var(--text-faint);
+  }
+  .repo-card .repo-desc{ color: var(--text-muted); font-size: 0.88rem; min-height: 44px; }
+
+  .repo-meta{
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    font-size: 0.8rem; color: var(--text-faint); font-family: var(--font-mono);
+    margin-top: 4px;
+  }
+  .lang-dot{
+    display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+    margin-right: 5px; vertical-align: middle;
+  }
+  .lang-python{ background: var(--lang-python); }
+  .lang-shell{ background: var(--lang-shell); }
+  .lang-js{ background: var(--lang-js); }
+  .lang-ts{ background: var(--lang-ts); }
+  .lang-md{ background: var(--lang-md); }
+
+  .burn-meter{ display: inline-flex; gap: 2px; letter-spacing: -1px; }
+  .burn-meter .lit{ filter: drop-shadow(0 0 4px rgba(255,122,61,0.6)); }
+  .burn-meter .unlit{ opacity: 0.18; filter: grayscale(1); }
+
+  .repo-card .repo-updated{
+    font-size: 0.76rem; color: var(--text-faint);
+    border-top: 1px solid var(--border); padding-top: 10px; margin-top: 2px;
+  }
+
+  /* ---------- FEATURED REPO ---------- */
+  .featured{
+    max-width: 1200px; margin: 0 auto; padding: 8px 24px 56px;
+  }
+  .featured-header{
+    border: 1px solid var(--border); border-bottom: none;
+    background: var(--surface);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 20px 22px;
+  }
+  .featured-header .pin{
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--ember-glow);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .featured-header h3{
+    font-family: var(--font-mono); font-weight: 600; font-size: 1.25rem;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .featured-header h3 .owner{ color: var(--text-faint); }
+  .featured-header .tagline{ color: var(--text-muted); margin-top: 8px; font-size: 0.92rem; max-width: 60ch; }
+  .topic-tags{ display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .topic-tag{
+    font-family: var(--font-mono); font-size: 0.74rem;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--ember-glow); border-radius: 100px; padding: 3px 11px;
+  }
+
+  .featured-body{
+    display: grid; grid-template-columns: 2.2fr 1fr;
+    border: 1px solid var(--border); border-radius: 0 0 var(--radius) var(--radius);
+    overflow: hidden;
+  }
+  @media (max-width: 880px){ .featured-body{ grid-template-columns: 1fr; } }
+
+  .file-tree{
+    border-bottom: 1px solid var(--border);
+  }
+  .file-tree ul{ list-style: none; }
+  .file-tree li{
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: 9px 18px; font-family: var(--font-mono); font-size: 0.82rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .file-tree li:last-child{ border-bottom: none; }
+  .file-tree li .fname{ display: flex; align-items: center; gap: 10px; color: var(--text); }
+  .file-tree li .fmsg{ color: var(--text-faint); text-align: right; flex-shrink: 0; }
+  .file-tree li .ftime{ color: var(--text-faint); white-space: nowrap; min-width: 70px; text-align: right; flex-shrink: 0; }
+
+  .readme{
+    padding: 24px 26px;
+  }
+  .readme .readme-title{
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-faint);
+    border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .readme h4{
+    font-family: var(--font-display); font-size: 1.15rem; margin: 22px 0 8px;
+  }
+  .readme h4:first-of-type{ margin-top: 0; }
+  .readme p{ color: var(--text-muted); font-size: 0.92rem; margin-bottom: 10px; }
+  .readme ul{ color: var(--text-muted); font-size: 0.92rem; margin: 0 0 10px 22px; }
+  .readme code, .readme pre{
+    font-family: var(--font-mono); font-size: 0.82rem;
+    background: var(--bg-deep); border: 1px solid var(--border); border-radius: 6px;
+  }
+  .readme code{ padding: 2px 6px; color: var(--ember-glow); }
+  .readme pre{ padding: 12px 14px; overflow-x: auto; color: var(--tan); margin-bottom: 10px; }
+
+  .sidebar{
+    padding: 22px;
+    background: var(--surface);
+  }
+  @media (min-width: 881px){ .sidebar{ border-left: 1px solid var(--border); } }
+  .sidebar h5{
+    font-family: var(--font-display); font-size: 0.95rem; margin-bottom: 10px;
+    color: var(--text);
+  }
+  .sidebar-block{ margin-bottom: 26px; }
+  .sidebar-block p{ color: var(--text-muted); font-size: 0.88rem; }
+
+  .big-burn{ font-size: 1.6rem; letter-spacing: -2px; margin: 6px 0; }
+  .big-burn .lit{ filter: drop-shadow(0 0 6px rgba(255,122,61,0.7)); }
+  .big-burn .unlit{ opacity: 0.15; filter: grayscale(1); }
+  .flame-flicker{ animation: flicker 2.4s ease-in-out infinite; display: inline-block; }
+  @keyframes flicker{
+    0%,100%{ transform: scale(1) rotate(0deg); }
+    25%{ transform: scale(1.08) rotate(-2deg); }
+    50%{ transform: scale(0.96) rotate(2deg); }
+    75%{ transform: scale(1.05) rotate(-1deg); }
+  }
+
+  .lang-bar{
+    display: flex; height: 8px; border-radius: 100px; overflow: hidden;
+    margin-bottom: 10px; background: var(--border);
+  }
+  .lang-bar span{ display: block; height: 100%; }
+  .lang-legend{ display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem; color: var(--text-muted); font-family: var(--font-mono); }
+  .lang-legend .lg-row{ display: flex; align-items: center; gap: 8px; }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top: 1px solid var(--border);
+    background: var(--bg-deep);
+    padding: 48px 24px 28px;
+    margin-top: 24px;
+  }
+  .footer-inner{
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px;
+  }
+  @media (max-width: 760px){ .footer-inner{ grid-template-columns: 1fr 1fr; } }
+  .footer-inner h6{
+    font-family: var(--font-mono); font-size: 0.76rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 14px;
+  }
+  .footer-inner ul{ list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .footer-inner ul a{ color: var(--text-muted); font-size: 0.88rem; }
+  .footer-brand .logo{ margin-bottom: 12px; }
+  .footer-brand p{ color: var(--text-faint); font-size: 0.84rem; max-width: 34ch; }
+  .footer-bottom{
+    max-width: 1200px; margin: 36px auto 0; padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem; color: var(--text-faint); font-family: var(--font-mono);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M16 2C12 2 9 6 9 10c0 1.2.3 2.1.9 3.1C8.7 14.4 7 17 7 20.5 7 26 11 30 16 30s9-4 9-9.5c0-3.5-1.7-6.1-2.9-7.4.6-1 .9-1.9.9-3.1 0-4-3-8-7-8Z" fill="#3a2a1a" stroke="#5a4530" stroke-width="1"/>
+        <path d="M16 2C12 2 9 6 9 10c0 1.2.3 2.1.9 3.1C8.7 14.4 7 17 7 20.5 7 26 11 30 16 30s9-4 9-9.5c0-3.5-1.7-6.1-2.9-7.4.6-1 .9-1.9.9-3.1 0-4-3-8-7-8Z" fill="url(#charGrad)" opacity="0.55"/>
+        <path d="M16 13.5C13 13.5 10.5 16.5 10.5 20.5S13 28 16 28s5.5-3 5.5-7.5S19 13.5 16 13.5Z" fill="#241810" opacity="0.5"/>
+        <path d="M11 11.5c1.5-1 3-1.2 5-1.2s3.5.2 5 1.2" stroke="#ff7a3d" stroke-width="0.8" stroke-linecap="round" opacity="0.7"/>
+        <path d="M13 17.5l1.5 2-1 2.2M19 19l-1.5 1.8 1 2" stroke="#1b1108" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <linearGradient id="charGrad" x1="9" y1="2" x2="25" y2="30">
+            <stop offset="0" stop-color="#ff7a3d"/>
+            <stop offset="1" stop-color="#1b1108"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      GooPHub
+    </a>
+    <nav class="nav-links">
+      <a href="#trending">Roasts</a>
+      <a href="#trending">Explore the Ashtray</a>
+      <a href="#featured">Burn Requests</a>
+      <a href="#footer-pricing">GooPHub Pro</a>
+    </nav>
+    <div class="nav-search">
+      <span class="icon">🔎</span>
+      <input id="searchInput" type="text" placeholder="Search burnt repos…" aria-label="Search repositories">
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost">Sign in</button>
+      <button class="btn btn-primary">Start burning</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-copy">
+    <div class="hero-eyebrow">99.2% of builds finish well done</div>
+    <h1>Push code.<br>Pull <span class="accent">smoke.</span></h1>
+    <p class="lead">
+      GooPHub is the home for half-baked ideas that go in raw and come out
+      permanently carbonized. Free hosting for repos, regrets, and the
+      lingering smell of burnt peanuts that never quite leaves the office.
+    </p>
+    <div class="hero-ctas">
+      <button class="btn btn-primary">Start your first roast</button>
+      <a class="btn" href="#trending">Browse the ashtray</a>
+    </div>
+    <div class="stat-strip">
+      <div>
+        <div class="stat-num">4.2M</div>
+        <div class="stat-label">Roasts hosted</div>
+      </div>
+      <div>
+        <div class="stat-num">890K</div>
+        <div class="stat-label">Currently smoking</div>
+      </div>
+      <div>
+        <div class="stat-num">12</div>
+        <div class="stat-label">Fire dept. visits / wk</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual" aria-hidden="true">
+    <div class="peanut-stage">
+      <svg viewBox="0 0 360 360" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="180" cy="300" rx="140" ry="22" fill="#0c0805" opacity="0.6"/>
+        <path d="M180 30C120 30 75 80 75 135c0 18 5 32 14 46-13 22-24 56-24 92 0 80 52 145 115 145s115-65 115-145c0-36-11-70-24-92 9-14 14-28 14-46 0-55-45-105-105-105Z" fill="#3a2a1a" stroke="#5a4530" stroke-width="2"/>
+        <path d="M180 30C120 30 75 80 75 135c0 18 5 32 14 46-13 22-24 56-24 92 0 80 52 145 115 145s115-65 115-145c0-36-11-70-24-92 9-14 14-28 14-46 0-55-45-105-105-105Z" fill="url(#heroChar)" opacity="0.7"/>
+        <ellipse cx="150" cy="120" rx="34" ry="22" fill="#1b1108" opacity="0.55"/>
+        <ellipse cx="225" cy="250" rx="46" ry="30" fill="#1b1108" opacity="0.5"/>
+        <ellipse cx="120" cy="230" rx="20" ry="14" fill="#1b1108" opacity="0.4"/>
+        <path d="M110 100c20-14 40-18 65-18s50 4 70 18M95 200c25-18 55-22 90-22s70 6 95 24" stroke="#ff7a3d" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+        <path d="M150 160l14 20-10 22M210 180l-14 18 10 24M170 90l10 16-8 18" stroke="#100a06" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <radialGradient id="heroChar" cx="35%" cy="30%" r="80%">
+            <stop offset="0" stop-color="#ff9f5a"/>
+            <stop offset="0.4" stop-color="#b8511f"/>
+            <stop offset="1" stop-color="#1b1108"/>
+          </radialGradient>
+        </defs>
+      </svg>
+      <svg class="smoke-wisp s1" viewBox="0 0 60 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M30 120C10 90 50 80 25 55C0 30 45 25 30 0" stroke="#b8a690" stroke-width="6" fill="none" stroke-linecap="round"/>
+      </svg>
+      <svg class="smoke-wisp s2" viewBox="0 0 40 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 120C40 95 5 80 25 55C45 30 10 25 20 0" stroke="#9c8b78" stroke-width="5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <svg class="smoke-wisp s3" viewBox="0 0 50 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M25 120C5 95 45 80 22 55C0 30 40 25 25 0" stroke="#80705e" stroke-width="6" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="trending">
+  <div class="section-head">
+    <h2>🔥 Trending Roasts</h2>
+    <p>Today's most thoroughly ruined peanuts, sorted by char.</p>
+  </div>
+  <div class="repo-grid" id="repoGrid">
+
+    <div class="repo-card" data-name="carverlabs/optimal-char-detector description computer vision crime scene roasted python">
+      <div class="repo-title">
+        <span class="owner">carverlabs /</span>
+        <a href="#featured">optimal-char-detector</a>
+        <span class="badge">Public</span>
+      </div>
+      <p class="repo-desc">Computer vision model that pinpoints the exact moment a peanut crosses from "roasted" to "crime scene." 99.9% accurate, 0% useful after the fact.</p>
+      <div class="repo-meta">
+        <span><span class="lang-dot lang-python"></span>Python</span>
+        <span>🥜 12.8k</span>
+        <span>🐚 1.2k</span>
+        <span class="burn-meter" title="Burn level 5/5">
+          <span class="lit">🔥</span><span class="lit">🔥</span><span class="lit">🔥</span><span class="lit">🔥</span><span class="lit">🔥</span>
+        </span>
+      </div>
+      <div class="repo-updated">Updated 2 minutes ago · still smoking</div>
+    </div>
+
+    <div class="repo-card" data-name="nutjob/smoke-alarm-silencer description firmware mute detector kitchen">
+      <div class="repo-title">
+        <span class="owner">nutjob /</span>
+        <a href="#">smoke-alarm-silencer</a>
+        <span class="badge">Public</span>
+      </div>
+      <p class="repo-desc">A firmware patch that mutes your smoke detector for exactly as long as it takes to remember the peanuts are still in the oven.</p>
+      <div class="repo-meta">
+        <span><span class="lang-dot lang-shell"></span>Shell</span>
+        <span>🥜 9.1k</span>
+        <span>🐚 3.4k</span>
+        <span class="burn-meter" title="Burn level 5/5">
+          <span class="lit">🔥</span><span class="lit">🔥</span><span class="lit">🔥</span><span class="lit">🔥</span><span class="lit">🔥</span>
+        </span>
+      </div>
+      <div class="repo-updated">Updated 11 minutes ago · neighbors concerned</div>
+    </div>
+
+    <div class="repo-card" data-name="legume-systems/just-five-more-minutes description timer app rounds up javascript">
+      <div class="repo-title">
+        <span class="owner">legume-systems /</span>
+        <a href="#">just-five-more-minutes</a>
+        <span class="badge">Public</span>
+      </div>
+      <p class="repo-desc">A timer app that always rounds up. Always. Originally designed for roasting peanuts, now responsible for three missed flights.</p>
+      <div class="repo-meta">
+        <span><span class="lang-dot lang-js"></span>JavaScript</span>
+        <span>🥜 6.7k</span>
+        <span>🐚 890</span>
+        <span class="burn-meter" title="Burn level 4/5">
+          <span class="lit">🔥</span><span class="lit">🔥</span><span class="lit">🔥</span><span class="lit">🔥</span><span class="unlit">🔥</span>
+        </span>
+      </div>
+      <div class="repo-updated">Updated 38 minutes ago</div>
+    </div>
+
+    <div class="repo-card" data-name="shell-shock/peanut-or-charcoal description binary classifier accuracy python">
+      <div class="repo-title">
+        <span class="owner">shell-shock /</span>
+        <a href="#">peanut-or-charcoal</a>
+        <span class="badge">Public</span>
+      </div>
+      <p class="repo-desc">A binary classifier with exactly 50% accuracy, which is somehow worse than just guessing. Tech debt: immeasurable. Smell: also immeasurable.</p>
+      <div class="repo-meta">
+        <span><span class="lang-dot lang-python"></span>Python</span>
+        <span>🥜 4.3k</span>
+        <span>🐚 512</span>
+        <span class="burn-meter" title="Burn level 3/5">
+          <span class="lit">🔥</span><span class="lit">🔥</span><span class="lit">🔥</span><span class="unlit">🔥</span><span class="unlit">🔥</span>
+        </span>
+      </div>
+      <div class="repo-updated">Updated 2 hours ago</div>
+    </div>
+
+    <div class="repo-card" data-name="ash-tray/recipe-archive-incinerated description cookbook every recipe markdown">
+      <div class="repo-title">
+        <span class="owner">ash-tray /</span>
+        <a href="#">recipe-archive-incinerated</a>
+        <span class="badge">Public</span>
+      </div>
+      <p class="repo-desc">A cookbook where every single recipe — regardless of ingredients, oven, or intent — ends with the same step: "remove ashes, apologize."</p>
+      <div class="repo-meta">
+        <span><span class="lang-dot lang-md"></span>Markdown</span>
+        <span>🥜 3.1k</span>
+        <span>🐚 204</span>
+        <span class="burn-meter" title="Burn level 5/5">
+          <span class="lit">🔥</span><span class="lit">🔥</span><span class="lit">🔥</span><span class="lit">🔥</span><span class="lit">🔥</span>
+        </span>
+      </div>
+      <div class="repo-updated">Updated 5 hours ago</div>
+    </div>
+
+    <div class="repo-card" data-name="roastmaster/oven-mitt-not-included description ecommerce starter kit typescript">
+      <div class="repo-title">
+        <span class="owner">roastmaster /</span>
+        <a href="#">oven-mitt-not-included</a>
+        <span class="badge">Public</span>
+      </div>
+      <p class="repo-desc">An e-commerce starter kit for selling things that should probably come with a warning label, an oven mitt, and a small fire extinguisher.</p>
+      <div class="repo-meta">
+        <span><span class="lang-dot lang-ts"></span>TypeScript</span>
+        <span>🥜 2.2k</span>
+        <span>🐚 88</span>
+        <span class="burn-meter" title="Burn level 2/5">
+          <span class="lit">🔥</span><span class="lit">🔥</span><span class="unlit">🔥</span><span class="unlit">🔥</span><span class="unlit">🔥</span>
+        </span>
+      </div>
+      <div class="repo-updated">Updated yesterday</div>
+    </div>
+
+  </div>
+  <p id="noResults" style="display:none; color: var(--text-faint); font-family: var(--font-mono); font-size: 0.9rem; margin-top: 18px;">
+    No roasts match that search. Maybe try less salt.
+  </p>
+</section>
+
+<section class="featured" id="featured">
+  <div class="featured-header">
+    <div class="pin">📌 Pinned roast</div>
+    <h3><span class="owner">carverlabs /</span> optimal-char-detector</h3>
+    <p class="tagline">A computer vision pipeline that watches your oven through a webcam and tells you, with great confidence and zero remorse, that it's already too late.</p>
+    <div class="topic-tags">
+      <span class="topic-tag">#overcooked</span>
+      <span class="topic-tag">#peanuts</span>
+      <span class="topic-tag">#regret</span>
+      <span class="topic-tag">#350°F</span>
+      <span class="topic-tag">#well-done</span>
+    </div>
+  </div>
+  <div class="featured-body">
+    <div class="repo-main">
+      <div class="file-tree">
+        <ul>
+          <li>
+            <span class="fname">📁 .github/workflows</span>
+            <span class="fmsg">chore: rename ignite.yml to ignite-final.yml</span>
+            <span class="ftime">3 min ago</span>
+          </li>
+          <li>
+            <span class="fname">📁 src</span>
+            <span class="fmsg">feat: add "definitely burnt" tier</span>
+            <span class="ftime">3 min ago</span>
+          </li>
+          <li>
+            <span class="fname">📄 BURNT_NOTES.md</span>
+            <span class="fmsg">docs: add disclaimer about fire department</span>
+            <span class="ftime">1 hour ago</span>
+          </li>
+          <li>
+            <span class="fname">📄 roast.log</span>
+            <span class="fmsg">fix: stop logging the smell, start logging the smoke</span>
+            <span class="ftime">yesterday</span>
+          </li>
+          <li>
+            <span class="fname">📄 recipe.burnt</span>
+            <span class="fmsg">chore: replace smoke alarm batteries (again)</span>
+            <span class="ftime">2 days ago</span>
+          </li>
+          <li>
+            <span class="fname">📄 LICENSE-WELL-DONE.md</span>
+            <span class="fmsg">fix: typo in apology to neighbors</span>
+            <span class="ftime">4 days ago</span>
+          </li>
+        </ul>
+      </div>
+      <div class="readme">
+        <div class="readme-title">📄 BURNT_NOTES.md</div>
+        <h4>optimal-char-detector 🥜🔥</h4>
+        <p>
+          A lightweight vision model trained on 40,000 hours of kitchen footage
+          to detect the precise frame where "golden brown" becomes "structural
+          failure." Runs on any webcam pointed vaguely at an oven.
+        </p>
+        <h4>Installation</h4>
+        <pre><code>pip install optimal-char-detector --no-warranty</code></pre>
+        <h4>Usage</h4>
+        <pre><code>from char_detector import watch
+watch(camera=0, alert="too_late")</code></pre>
+        <h4>Known issues</h4>
+        <ul>
+          <li>Model confidence increases the longer you ignore it.</li>
+          <li>The kitchen still smells. We are aware. We are not fixing it.</li>
+          <li>Setting <code>alert="too_late"</code> earlier does not help.</li>
+        </ul>
+        <h4>Roadmap</h4>
+        <p>
+          v2 will detect char level before you've even started preheating,
+          giving you a full head start on disappointment.
+        </p>
+      </div>
+    </div>
+    <aside class="sidebar">
+      <div class="sidebar-block">
+        <h5>About</h5>
+        <p>Detects the burnt/not-burnt boundary in real time. Mostly used to confirm what everyone already knew.</p>
+      </div>
+      <div class="sidebar-block">
+        <h5>Burn-O-Meter</h5>
+        <div class="big-burn">
+          <span class="lit flame-flicker">🔥</span><span class="lit flame-flicker" style="animation-delay:0.3s">🔥</span><span class="lit flame-flicker" style="animation-delay:0.6s">🔥</span><span class="lit flame-flicker" style="animation-delay:0.9s">🔥</span><span class="lit flame-flicker" style="animation-delay:1.2s">🔥</span>
+        </div>
+        <p style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-faint);">5 / 5 — past the point of return</p>
+      </div>
+      <div class="sidebar-block">
+        <h5>Languages</h5>
+        <div class="lang-bar">
+          <span style="width: 68%; background: var(--lang-python);"></span>
+          <span style="width: 22%; background: var(--lang-shell);"></span>
+          <span style="width: 10%; background: var(--ember-deep);"></span>
+        </div>
+        <div class="lang-legend">
+          <div class="lg-row"><span class="lang-dot lang-python"></span>Python — 68%</div>
+          <div class="lg-row"><span class="lang-dot lang-shell"></span>Shell — 22%</div>
+          <div class="lg-row"><span class="lang-dot" style="background: var(--ember-deep);"></span>Smoke — 10%</div>
+        </div>
+      </div>
+      <div class="sidebar-block">
+        <h5>Recent scorches</h5>
+        <p style="margin-bottom:6px;">"fix: increase oven temp because waiting is for cowards" — <span style="color:var(--text-faint)">3m ago</span></p>
+        <p style="margin-bottom:6px;">"docs: add disclaimer about fire department" — <span style="color:var(--text-faint)">1h ago</span></p>
+        <p style="margin-bottom:6px;">"feat: add 'definitely burnt' tier" — <span style="color:var(--text-faint)">yesterday</span></p>
+        <p>"chore: replace smoke alarm batteries (again)" — <span style="color:var(--text-faint)">2d ago</span></p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<footer id="footer-pricing">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="logo">
+        <svg class="logo-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M16 2C12 2 9 6 9 10c0 1.2.3 2.1.9 3.1C8.7 14.4 7 17 7 20.5 7 26 11 30 16 30s9-4 9-9.5c0-3.5-1.7-6.1-2.9-7.4.6-1 .9-1.9.9-3.1 0-4-3-8-7-8Z" fill="#3a2a1a" stroke="#5a4530" stroke-width="1"/>
+          <path d="M16 2C12 2 9 6 9 10c0 1.2.3 2.1.9 3.1C8.7 14.4 7 17 7 20.5 7 26 11 30 16 30s9-4 9-9.5c0-3.5-1.7-6.1-2.9-7.4.6-1 .9-1.9.9-3.1 0-4-3-8-7-8Z" fill="url(#footChar)" opacity="0.55"/>
+          <path d="M13 17.5l1.5 2-1 2.2M19 19l-1.5 1.8 1 2" stroke="#1b1108" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="footChar" x1="9" y1="2" x2="25" y2="30">
+              <stop offset="0" stop-color="#ff7a3d"/>
+              <stop offset="1" stop-color="#1b1108"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        GooPHub
+      </a>
+      <p>The home for code, repos, and the unmistakable smell of legumes that went too far.</p>
+    </div>
+    <div>
+      <h6>Product</h6>
+      <ul>
+        <li><a href="#trending">Roasts</a></li>
+        <li><a href="#featured">Burn Requests</a></li>
+        <li><a href="#">Smoke Alarms (Issues)</a></li>
+        <li><a href="#">GooPHub Pro — for professional arsonists</a></li>
+      </ul>
+    </div>
+    <div>
+      <h6>Resources</h6>
+      <ul>
+        <li><a href="#">Docs</a></li>
+        <li><a href="#">Writing a good BURNT_NOTES.md</a></li>
+        <li><a href="#">Oven status page</a></li>
+        <li><a href="#">Community ashtray</a></li>
+      </ul>
+    </div>
+    <div>
+      <h6>Company</h6>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Careers — mostly firefighters</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Apologize to a neighbor</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 GooPHub. Not responsible for kitchen fires, smoke damage, or existential peanut crises.</span>
+    <span>Status: 🔥 still smoking</span>
+  </div>
+</footer>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const cards = document.querySelectorAll('.repo-card');
+  const noResults = document.getElementById('noResults');
+
+  searchInput.addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    let visible = 0;
+    cards.forEach(card => {
+      const haystack = card.dataset.name.toLowerCase();
+      const match = haystack.includes(q);
+      card.classList.toggle('hidden', !match);
+      if (match) visible++;
+    });
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+  });
+</script>
+
+</body>
+</html>
